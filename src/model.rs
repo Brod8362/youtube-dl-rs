@@ -199,6 +199,7 @@ pub struct SingleVideo {
     pub ext: Option<String>,
     pub extractor: Option<String>,
     pub extractor_key: Option<String>,
+    pub filename: Option<String>,
     pub filesize: Option<i64>,
     pub filesize_approx: Option<f64>,
     pub format: Option<String>,
