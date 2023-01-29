@@ -106,6 +106,7 @@ pub struct JsonOutput {
     pub extractor: Option<String>,
     pub extractor_key: Option<String>,
     pub formats: Option<Vec<Format>>,
+    pub filename: Option<String>,
     pub genre: Option<String>,
     pub id: String,
     pub is_live: Option<bool>,
