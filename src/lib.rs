@@ -259,6 +259,7 @@ pub struct YoutubeDl {
     extra_args: Vec<String>,
     output_template: Option<String>,
     output_directory: Option<String>,
+    get_filename: bool,
     debug: bool,
 }
 
@@ -283,6 +284,7 @@ impl YoutubeDl {
             extra_args: Vec::new(),
             output_template: None,
             output_directory: None,
+            get_filename: false,
             debug: false,
         }
     }
@@ -403,6 +405,13 @@ impl YoutubeDl {
         self
     }
 
+    /// Retrieve the filename when downloading.
+    /// Will most likely break playlists.
+    pub fn get_filename(&mut self, arg: bool) -> &mut Self {
+        self.get_filename = arg;
+        self
+    }
+
     fn path(&self) -> &Path {
         match &self.youtube_dl_path {
             Some(path) => path,
@@ -475,7 +484,11 @@ impl YoutubeDl {
             args.push(extra_arg);
         }
 
-        args.push("-J");
+        if self.get_filename {
+            args.push("-j");
+        } else {
+            args.push("-J");
+        }
 
         if self.download {
             args.push("--no-simulate");
@@ -738,5 +751,19 @@ mod tests {
             .run()
             .unwrap();
         assert_eq!(output.into_single_video().unwrap().width, Some(608.0));
+    }
+
+    #[test]
+
+    fn test_filename() {
+        let output = YoutubeDl::new("https://www.youtube.com/watch?v=7XGyWcuYVrg")
+            .get_filename(true)
+            .output_template("filename_test")
+            .run()
+            .unwrap()
+            .into_single_video()
+            .unwrap();
+
+        assert_eq!(output.filename, Some(String::from("filename_test")))
     }
 }
